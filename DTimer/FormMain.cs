@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+
 
 namespace DTimer
 {
     public partial class FormMain : Form
     {
 
-        private DataTable dataTableTimer; //순번, 시간, 음악 파일 위치를 담은 데이터 테이블
+        private DataTable dataTableTimer = new DataTable(); //순번, 시간, 음악 파일 위치를 담은 데이터 테이블
 
         int currentTime = 0;
-        bool musicFlag = false;
+        bool timerFlag = false;
         string filePath = "";
 
         public FormMain()
@@ -35,28 +31,29 @@ namespace DTimer
 
             //Console.WriteLine(File.Exists(filePath) ? "File exists." : "File does not exist.");
 
-            if(File.Exists(filePath))
-            {//기존의 파일이 존재한다면
-                LoadDataCSVFile(filePath);
 
+            //일단 다 주석처리
+            if (File.Exists(filePath))
+            {//기존의 파일이 존재한다면
+                //LoadDataCSVFile(filePath);
             }
             else
             {//기존의 파일이 존재하지 않는다면
+                //CreateNewDataTable();//새 데이터 셋 생성
+                //CreateDataCSVFile(filePath);
+            }
 
-                CreateNewDataTable();//새 데이터 셋 생성
-                CreateDataCSVFile(filePath);
-                
-            }    
-
-
+            //if (null == dataTableTimer) 
+                CreateNewDataTable();
+            BindingDataTable(dataTableTimer);
 
         }
 
         private void CreateNewDataTable()
         {
             dataTableTimer = new DataTable();
-            dataTableTimer.Columns.Add("seq", typeof(int));
-            dataTableTimer.Columns.Add("time", typeof(int));
+            dataTableTimer.Columns.Add("seq", typeof(string));
+            dataTableTimer.Columns.Add("time", typeof(string));
             dataTableTimer.Columns.Add("filePath", typeof(string));
 
         }
@@ -84,24 +81,63 @@ namespace DTimer
         {//1초 단위로 실행
             //Console.WriteLine("test");
             textBoxDateTime.Text = System.DateTime.Now.ToLocalTime().ToString();
-            
-            //
-
-            if(dataTableTimer.Rows.Count > 0)
+            //Console.WriteLine(timerFlag);
+            if (timerFlag)
             {
 
+                if (currentTime > 0)//현재 남은 시간이 있는지 확인
+                {
+                    currentTime -= 1; //1초줄임
+                    showRestTime(currentTime);
+                    Console.WriteLine("good :" + currentTime);
+                }
+                else if (null != dataTableTimer.Rows)//현재 남은 시간이 없음
+                {
+                    showRestTime(0);
+                    StopMusic();
+                    if (dataTableTimer.Rows.Count > 0)
+                    {
+                        showRestTime(currentTime);
+
+                        currentTime = Int32.Parse(dataTableTimer.Rows[0]["time"].ToString());
+                        showRestTime(currentTime);
+
+                        filePath = dataTableTimer.Rows[0]["filePath"].ToString();
+                        Console.WriteLine("ok");
+                        PlayMusic(filePath);
+
+                        dataTableTimer.Rows.RemoveAt(0);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("f");
+                        timerFlag = false;
+                    }
+                }
             }
 
         }
 
+        private void showRestTime(int currentTime)
+        {
+            int currentHour = currentTime / (60 * 60);
+            int currentMinute = (currentTime % (60 * 60)) / 60;
+            int currentSecond = ((currentTime % (60 * 60)) % 60) % 60;
+
+            labelTimerCounter.Text = currentHour.ToString("D2") + ":" + currentMinute.ToString("D2") + ":" + currentSecond.ToString("D2");
+        }
+
         private void PlayMusic(String filePath)
         {
-            
+            axWindowsMediaPlayerMain.URL = filePath;
+            textBoxCurrentMusicPath.Text = filePath;
+
         }
 
         private void StopMusic()
         {
-
+            axWindowsMediaPlayerMain.Ctlcontrols.stop();
         }
 
         private void buttonFindMusicFile_Click(object sender, EventArgs e)
@@ -126,11 +162,14 @@ namespace DTimer
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             //열 숫자는 현재 하드코딩중
-            int currRowCount = dataTableTimer.Rows.Count + 1;
+            int currRowCount = 0;
+            if (null != dataTableTimer.Rows) currRowCount = dataTableTimer.Rows.Count + 1;
+
 
             int hour = (int)numericUpDownHour.Value;
             int minute = (int)numericUpDownMinute.Value;
             int second = (int)numericUpDownSecond.Value;
+
 
             int totalSecond = hour * 60 * 60 + minute * 60 + second;
 
@@ -138,14 +177,22 @@ namespace DTimer
 
             dataTableTimer.Rows.Add(currRowCount, totalSecond, textBoxMusicFilePath.Text);
 
-            BindingDataTable(dataTableTimer);
+            numericUpDownHour.Value = 0;
+            numericUpDownMinute.Value = 0;
+            numericUpDownSecond.Value = 0;
+            textBoxMusicFilePath.Text = "";
+
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-
+            timerFlag = !timerFlag;
         }
-
+        /// <summary>
+        /// DataTable의 데이터를 csv파일 형식으로 변환하여 저장
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="filePath"></param>
         private static void DataTableToCSV(DataTable dataTable, string filePath)
         {
             StreamWriter streamWriter = new StreamWriter(filePath, false);
@@ -187,22 +234,22 @@ namespace DTimer
 
         private static void CSVToDataTable(DataTable dataTable, string filePath)
         {
-            StreamReader sr = new StreamReader(filePath);
-            string[] headers = sr.ReadLine().Split(',');
+            StreamReader streamReader = new StreamReader(filePath);
+            string[] headers = streamReader.ReadLine().Split(',');
             dataTable = new DataTable();
             foreach (string header in headers)
             {
                 dataTable.Columns.Add(header);
             }
-            while (!sr.EndOfStream)
+            while (!streamReader.EndOfStream)
             {
-                string[] rows = Regex.Split(sr.ReadLine(), ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
-                DataRow dr = dataTable.NewRow();
+                string[] rows = System.Text.RegularExpressions.Regex.Split(streamReader.ReadLine(), ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                DataRow dataRow = dataTable.NewRow();
                 for (int i = 0; i < headers.Length; i++)
                 {
-                    dr[i] = rows[i];
+                    dataRow[i] = rows[i];
                 }
-                dataTable.Rows.Add(dr);
+                dataTable.Rows.Add(dataRow);
             }
 
         }

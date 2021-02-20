@@ -30,6 +30,7 @@ namespace DTimer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.TimerMain = new System.Windows.Forms.Timer(this.components);
             this.labelDateTime = new System.Windows.Forms.Label();
             this.textBoxDateTime = new System.Windows.Forms.TextBox();
@@ -45,14 +46,15 @@ namespace DTimer
             this.numericUpDownHour = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.buttonAdd = new System.Windows.Forms.Button();
-            this.progressBarTimer = new System.Windows.Forms.ProgressBar();
             this.labelTimerCounter = new System.Windows.Forms.Label();
             this.buttonStart = new System.Windows.Forms.Button();
+            this.axWindowsMediaPlayerMain = new AxWMPLib.AxWindowsMediaPlayer();
             this.textBoxCurrentMusicPath = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMain)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinute)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSecond)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHour)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerMain)).BeginInit();
             this.SuspendLayout();
             // 
             // TimerMain
@@ -76,7 +78,7 @@ namespace DTimer
             this.textBoxDateTime.Location = new System.Drawing.Point(65, 9);
             this.textBoxDateTime.Name = "textBoxDateTime";
             this.textBoxDateTime.ReadOnly = true;
-            this.textBoxDateTime.Size = new System.Drawing.Size(138, 21);
+            this.textBoxDateTime.Size = new System.Drawing.Size(159, 21);
             this.textBoxDateTime.TabIndex = 2;
             this.textBoxDateTime.TabStop = false;
             // 
@@ -88,13 +90,13 @@ namespace DTimer
             this.dataGridViewMain.Name = "dataGridViewMain";
             this.dataGridViewMain.ReadOnly = true;
             this.dataGridViewMain.RowTemplate.Height = 23;
-            this.dataGridViewMain.Size = new System.Drawing.Size(240, 429);
+            this.dataGridViewMain.Size = new System.Drawing.Size(245, 429);
             this.dataGridViewMain.TabIndex = 3;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 55);
+            this.label1.Location = new System.Drawing.Point(6, 50);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 12);
             this.label1.TabIndex = 5;
@@ -102,7 +104,7 @@ namespace DTimer
             // 
             // numericUpDownMinute
             // 
-            this.numericUpDownMinute.Location = new System.Drawing.Point(208, 53);
+            this.numericUpDownMinute.Location = new System.Drawing.Point(182, 46);
             this.numericUpDownMinute.Maximum = new decimal(new int[] {
             60,
             0,
@@ -115,7 +117,7 @@ namespace DTimer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(274, 55);
+            this.label2.Location = new System.Drawing.Point(248, 50);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(17, 12);
             this.label2.TabIndex = 7;
@@ -147,7 +149,7 @@ namespace DTimer
             // 
             // numericUpDownSecond
             // 
-            this.numericUpDownSecond.Location = new System.Drawing.Point(299, 53);
+            this.numericUpDownSecond.Location = new System.Drawing.Point(271, 46);
             this.numericUpDownSecond.Maximum = new decimal(new int[] {
             60,
             0,
@@ -160,7 +162,7 @@ namespace DTimer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(365, 55);
+            this.label3.Location = new System.Drawing.Point(337, 50);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(17, 12);
             this.label3.TabIndex = 11;
@@ -168,7 +170,7 @@ namespace DTimer
             // 
             // numericUpDownHour
             // 
-            this.numericUpDownHour.Location = new System.Drawing.Point(98, 51);
+            this.numericUpDownHour.Location = new System.Drawing.Point(81, 46);
             this.numericUpDownHour.Maximum = new decimal(new int[] {
             23,
             0,
@@ -181,7 +183,7 @@ namespace DTimer
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(164, 53);
+            this.label4.Location = new System.Drawing.Point(147, 50);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 12);
             this.label4.TabIndex = 13;
@@ -189,7 +191,7 @@ namespace DTimer
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Location = new System.Drawing.Point(442, 50);
+            this.buttonAdd.Location = new System.Drawing.Point(467, 46);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(75, 23);
             this.buttonAdd.TabIndex = 14;
@@ -197,18 +199,11 @@ namespace DTimer
             this.buttonAdd.UseVisualStyleBackColor = true;
             this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
-            // progressBarTimer
-            // 
-            this.progressBarTimer.Location = new System.Drawing.Point(8, 371);
-            this.progressBarTimer.Name = "progressBarTimer";
-            this.progressBarTimer.Size = new System.Drawing.Size(534, 23);
-            this.progressBarTimer.TabIndex = 15;
-            // 
             // labelTimerCounter
             // 
             this.labelTimerCounter.AutoSize = true;
             this.labelTimerCounter.Font = new System.Drawing.Font("나눔고딕 ExtraBold", 71.99999F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
-            this.labelTimerCounter.Location = new System.Drawing.Point(46, 180);
+            this.labelTimerCounter.Location = new System.Drawing.Point(46, 179);
             this.labelTimerCounter.Name = "labelTimerCounter";
             this.labelTimerCounter.Size = new System.Drawing.Size(455, 110);
             this.labelTimerCounter.TabIndex = 16;
@@ -224,6 +219,15 @@ namespace DTimer
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
+            // axWindowsMediaPlayerMain
+            // 
+            this.axWindowsMediaPlayerMain.Enabled = true;
+            this.axWindowsMediaPlayerMain.Location = new System.Drawing.Point(12, 367);
+            this.axWindowsMediaPlayerMain.Name = "axWindowsMediaPlayerMain";
+            this.axWindowsMediaPlayerMain.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("axWindowsMediaPlayerMain.OcxState")));
+            this.axWindowsMediaPlayerMain.Size = new System.Drawing.Size(530, 44);
+            this.axWindowsMediaPlayerMain.TabIndex = 19;
+            // 
             // textBoxCurrentMusicPath
             // 
             this.textBoxCurrentMusicPath.Location = new System.Drawing.Point(12, 340);
@@ -237,11 +241,11 @@ namespace DTimer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(801, 450);
+            this.Controls.Add(this.axWindowsMediaPlayerMain);
             this.Controls.Add(this.textBoxCurrentMusicPath);
             this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.labelTimerCounter);
-            this.Controls.Add(this.progressBarTimer);
             this.Controls.Add(this.buttonAdd);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.numericUpDownHour);
@@ -261,6 +265,7 @@ namespace DTimer
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinute)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSecond)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHour)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.axWindowsMediaPlayerMain)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -283,9 +288,9 @@ namespace DTimer
         private System.Windows.Forms.NumericUpDown numericUpDownHour;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button buttonAdd;
-        private System.Windows.Forms.ProgressBar progressBarTimer;
         private System.Windows.Forms.Label labelTimerCounter;
         private System.Windows.Forms.Button buttonStart;
+        private AxWMPLib.AxWindowsMediaPlayer axWindowsMediaPlayerMain;
         private System.Windows.Forms.TextBox textBoxCurrentMusicPath;
     }
 }
