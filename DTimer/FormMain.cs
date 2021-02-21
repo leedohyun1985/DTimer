@@ -49,34 +49,40 @@ namespace DTimer
 
         }
 
+        /// <summary>
+        /// 새 데이터 테이블 생성
+        /// </summary>
         private void CreateNewDataTable()
         {
             dataTableTimer = new DataTable();
             dataTableTimer.Columns.Add("seq", typeof(string));
             dataTableTimer.Columns.Add("time", typeof(string));
             dataTableTimer.Columns.Add("filePath", typeof(string));
-
         }
-
+        /// <summary>
+        /// 새 CSV 파일 생성
+        /// </summary>
+        /// <param name="filePath"></param>
         private void CreateDataCSVFile(string filePath)
         {
-            //새 파일 생성
             StreamWriter textWrite = File.CreateText(filePath);
             textWrite.Dispose();
         }
 
-        private void LoadDataCSVFile(string filePath)
-        {
-            //파일을 읽어 데이터 셋으로 변환
-
-            BindingDataTable(dataTableTimer);
-        }
-
+        /// <summary>
+        /// 데이터 테이블을 GridView에 바인딩
+        /// </summary>
+        /// <param name="dataTableTimer"></param>
         private void BindingDataTable(DataTable dataTableTimer)
         {
             dataGridViewMain.DataSource = dataTableTimer;
         }
 
+        /// <summary>
+        /// 타이머 Tick 이벤트
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerMain_Tick(object sender, EventArgs e)
         {//1초 단위로 실행
             //Console.WriteLine("test");
@@ -119,6 +125,10 @@ namespace DTimer
 
         }
 
+        /// <summary>
+        /// 남은 시간 노출
+        /// </summary>
+        /// <param name="currentTime"></param>
         private void showRestTime(int currentTime)
         {
             int currentHour = currentTime / (60 * 60);
@@ -128,18 +138,29 @@ namespace DTimer
             labelTimerCounter.Text = currentHour.ToString("D2") + ":" + currentMinute.ToString("D2") + ":" + currentSecond.ToString("D2");
         }
 
+        /// <summary>
+        /// 음악재생
+        /// </summary>
+        /// <param name="filePath"></param>
         private void PlayMusic(String filePath)
         {
             axWindowsMediaPlayerMain.URL = filePath;
             textBoxCurrentMusicPath.Text = filePath;
-
         }
 
+        /// <summary>
+        /// 음악정지
+        /// </summary>
         private void StopMusic()
         {
             axWindowsMediaPlayerMain.Ctlcontrols.stop();
         }
 
+        /// <summary>
+        /// 음악파일 찾기 버튼 클릭 이벤트
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonFindMusicFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -159,6 +180,11 @@ namespace DTimer
             }
         }
 
+        /// <summary>
+        /// 알람 추가 버튼 클릭 이벤트
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonAdd_Click(object sender, EventArgs e)
         {
             //열 숫자는 현재 하드코딩중
@@ -184,10 +210,17 @@ namespace DTimer
 
         }
 
+        /// <summary>
+        /// 알람 시작 버튼 클릭 이벤트
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonStart_Click(object sender, EventArgs e)
         {
+            //현재는 토글 형식으로 두었음
             timerFlag = !timerFlag;
         }
+
         /// <summary>
         /// DataTable의 데이터를 csv파일 형식으로 변환하여 저장
         /// </summary>
@@ -232,6 +265,11 @@ namespace DTimer
             streamWriter.Close();
         }
 
+        /// <summary>
+        /// SCV 파일을 읽어 DataTable에 입력
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <param name="filePath"></param>
         private static void CSVToDataTable(DataTable dataTable, string filePath)
         {
             StreamReader streamReader = new StreamReader(filePath);
@@ -253,27 +291,5 @@ namespace DTimer
             }
 
         }
-
-        /*
-
-필요한 기능
-
-시간 추가
-시간 간격
-출력될 음악
-
-알람 추가
-
-저장이 가능해야함
-
-20210218
-현재는 가장 단순한 기능만 구현
-1. 타이머 시간 추가
-2. 타이머 시간 추가시 음악 추가
-
-
-
-*/
-
     }
 }
